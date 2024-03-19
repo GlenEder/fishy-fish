@@ -19,4 +19,4 @@ Font size set to 20 cause I'm blind
 [My neovim configuration](https://github.com/GlenEder/nvim)
 
 ### Configuration File 
-
+copy `config.fish` to `~/.config/fish/config.fish` and source the file
