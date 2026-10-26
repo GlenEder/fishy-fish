@@ -119,7 +119,7 @@ function __updateDevrootRepo -d 'internal: update one repository for updateDevro
         echo "FAILED:$repo_name" | tee -a $result_file
         return 1
     end
-    master
+    main
     set -l result $status
     popd
 

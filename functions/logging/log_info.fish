@@ -12,7 +12,7 @@ function log_info -d 'Log informational messages to stdout'
         end
     end
 
-    set -l message (string join ' ' -- $argv)
+    set -l message (string join ' ' -- $argv | string collect)
     test -z "$message"; and return 0
 
     if test $show_timestamp = true

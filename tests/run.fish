@@ -142,6 +142,11 @@ assert_status "log_info with no message exits 0" 0 $status
 set -g empty_out (log_warning 2>/dev/null | string collect)
 assert_eq "log_warning with no message prints nothing" "" $empty_out
 
+# A multi-line message must stay one message, not one printf cycle per line
+set -g multi (string join ' ' -- (strip_colors (log_info "line one
+line two" | string collect)))
+assert_eq "log_info keeps a multiline message intact" "INFO: line one line two" "$multi"
+
 # --- isNumber ----------------------------------------------------------------
 
 isNumber 123
@@ -242,21 +247,21 @@ set -g out (git branch --list wt-branch | string collect)
 assert_eq "deleteOldBranches deletes the worktree branch" "" $out
 popd
 
-# --- master ------------------------------------------------------------------
+# --- main ------------------------------------------------------------------
 
 pushd $repo
 git checkout -q -b scratch-branch
-master >/dev/null 2>&1
-assert_status "master exits 0" 0 $status
-assert_eq "master checks out the default branch" "main" (git branch --show-current)
+main >/dev/null 2>&1
+assert_status "main exits 0" 0 $status
+assert_eq "main checks out the default branch" "main" (git branch --show-current)
 
 git branch gone-two
 git push -q -u origin gone-two
 git checkout -q main
 git push -q origin --delete gone-two
-master >/dev/null 2>&1
+main >/dev/null 2>&1
 set -g out (git branch --list gone-two | string collect)
-assert_eq "master cascades into deleteOldBranches" "" $out
+assert_eq "main cascades into deleteOldBranches" "" $out
 popd
 
 # --- checkout picker ---------------------------------------------------------
@@ -340,6 +345,15 @@ assert_status "updateDevroot reports failures without aborting" 0 $status
 set -g out (strip_colors (cat $out_file | string collect))
 assert_contains "updateDevroot counts failures" "1 failed" $out
 assert_contains "updateDevroot lists failed repos" "Failed repos: broken" $out
+
+# A healthy repo with origin/HEAD must update, not fail (regression: renamed checkout function)
+mkdir -p $sandbox/update-ok
+make_repo update-ok/ok >/dev/null
+git -C $sandbox/update-ok/ok fetch -q  # sets origin/HEAD; the clone was empty
+updateDevroot $sandbox/update-ok >$out_file 2>&1
+assert_status "updateDevroot non-fetch exits 0" 0 $status
+set -g out (strip_colors (cat $out_file | string collect))
+assert_contains "updateDevroot non-fetch updates a healthy repo" "1 succeeded, 0 failed" $out
 
 set -gx DEVROOT $upd_root
 updateDevroot -f >$out_file 2>&1

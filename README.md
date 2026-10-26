@@ -63,13 +63,13 @@ Font size set to 20 cause I'm blind
 |---|---|
 | `gits [-f/--filenames-only] [-h/--help]` | `git status -s`, or filenames only with `-f` |
 | `dropChanges [-a/--all-files] [-d/--delete-untracked] [-h/--help]` | Revert changes; `-a` checks out every changed file, `-d` deletes untracked files (current dir only unless `-a`) |
-| `master` | Check out the default branch, pull, fetch tags, then run `deleteOldBranches` |
+| `main` | Check out the default branch, pull, fetch tags, then run `deleteOldBranches` |
 | `createBranch <branch-name>` | Create a branch, push it, and set the upstream |
 | `deleteOldBranches` | Delete local branches whose remote is gone, removing their worktrees first |
 | `checkout` | Pick a local or remote branch from a paged list, then check it out and pull |
 | `updateDevroot [-f/--fetch-only] [-i/--ignore-dir <dir>]... [directory]` | Update every git repo under `$DEVROOT` (or the given directory) in parallel |
 
-`master` is destructive: it deletes stale branches and force-removes the worktrees that hold them.
+`main` is destructive: it deletes stale branches and force-removes the worktrees that hold them.
 `dropChanges -d` really deletes untracked files.
 
 ### utils
@@ -108,7 +108,7 @@ The suite runs in a temp sandbox with a local bare remote, so it never touches y
 fish tests/run.fish
 ```
 
-It covers argument parsing, `gits`, `dropChanges`, `createBranch`, `deleteOldBranches` (including worktree removal), `master`, the picker's paging, remote selection, retry, and closed stdin, plus `pwGen`, the loggers, and `updateDevroot`.
+It covers argument parsing, `gits`, `dropChanges`, `createBranch`, `deleteOldBranches` (including worktree removal), `main`, the picker's paging, remote selection, retry, and closed stdin, plus `pwGen`, the loggers, and `updateDevroot`.
 
 ### Manual checklist
 
