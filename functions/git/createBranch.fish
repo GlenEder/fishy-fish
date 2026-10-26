@@ -1,21 +1,21 @@
-function createBranch -a branchName -d 'Checkouts and pushes to remote the given branch name'
+function createBranch -d 'Create and push a new branch'
     if test (count $argv) -ne 1
-        echo "usage: createBranch <branch-name>"
+        log_error "usage: createBranch <branch-name>"
         return 1
     end
 
-    # check for existing branch 
-    set existBranch (git branch -r | grep "$branchName")
-    if test -n "$existBranch"
-        echo "Branch $branchName already exists";
-        return 1
-    end  
+    set -l branch_name $argv[1]
 
-    # confirm branch name 
-    echo "Create branch: $branchName?"
-    confirmYN
-    if test $status -eq 0
-        git checkout -b $branchName;
-        git push -u origin $branchName;
+    # Refuse to reuse a name that already exists on a remote
+    set -l exist_branch (git branch -r | grep $branch_name)
+    if test -n "$exist_branch"
+        log_error "Branch $branch_name already exists"
+        return 1
     end
-end 
+
+    log_info "Create branch: $branch_name?"
+    confirmYN; or return 0
+
+    git checkout -b $branch_name; or return $status
+    git push -u origin $branch_name
+end
