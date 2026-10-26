@@ -1,4 +1,4 @@
-function master -d 'Checkout the default branch, pull, fetch tags, and delete stale branches'
+function main -d 'Checkout the default branch, pull, fetch tags, and delete stale branches'
     # Resolve the repo's default branch (main, master, or whatever origin/HEAD points at)
     set -l head_ref (git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null)
     or begin
