@@ -12,7 +12,7 @@ function log_error -d 'Log error messages to stderr'
         end
     end
 
-    set -l message (string join ' ' -- $argv)
+    set -l message (string join ' ' -- $argv | string collect)
     test -z "$message"; and return 0
 
     if test $show_timestamp = true
